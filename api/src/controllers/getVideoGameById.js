@@ -5,11 +5,15 @@ const { API_KEY, URL } = process.env;
 
 const getVideoGamesByIdApi = async (id) => {
   try {
-    const response = await axios.get(`${URL}/games/${id}?key=${API_KEY}`);
+    const responseApi = await axios.get(`${URL}/games/${id}?key=${API_KEY}`);
     const { id, name, background_image } = response.data;
     return { id, name, imagen: background_image };
-  } catch (error) {
-    throw new Error("No se pudo obtener el videojuego de la API");
+  } catch {
+    //si esto no se encuenrta, pasar directamente a la base de datos
+    const responseDb = await getVideoGamesByIdDatabase(id);
+    if (!responseDb) throw new Error("No se pudo obtener el videojuego");
+    const { id, name, imagen } = responseDb;
+    return { id, name, imagen };
   }
 };
 
@@ -24,17 +28,9 @@ const getVideoGamesByIdDatabase = async (id) => {
     },
   });
   if (!videogame) {
-    throw new Error("No se pudo obtener el videojuego de la base de datos");
+    throw new Error("No se pudo obtener el videojuego");
   }
   return videogame;
-};
-
-const getVideoGamesById = async (id, source = "api") => {
-  if (source === "api") {
-    return await getVideoGamesByIdApi(id);
-  } else {
-    return await getVideoGamesByIdDatabase(id);
-  }
 };
 
 module.exports = getVideoGamesById;
