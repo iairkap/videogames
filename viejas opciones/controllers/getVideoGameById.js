@@ -1,9 +1,29 @@
 const axios = require("axios");
-const Videogame = require("../models/Videogame");
-const Genre = require("../models/Genre");
+const Videogame = require("../api/src/models/Videogame");
+const Genre = require("../api/src/models/Genre");
 const { API_KEY, URL } = process.env;
 
-const getVideoGamesByIdApi = async (id) => {
+const getVideoGamesById = async (id, source) => {
+  let videoGame;
+  if (source === "api") {
+    videoGame = (await axios.get(`${URL}/games/${id}?key=${API_KEY}`)).data;
+    const genres = videoGame.genres.map((genre) => ({
+      id: genre.id,
+      name: genre.name,
+    }));
+    videoGame.genres = genres;
+  } else {
+    videoGame = await Videogame.findByPk(id, {
+      include: [{ model: Genre, through: { attributes: [] } }],
+    });
+  }
+
+  return videoGame;
+};
+module.exports = { getVideoGamesById };
+
+/* 
+const getVideoGamesById = async (id) => {
   try {
     const responseApi = await axios.get(`${URL}/games/${id}?key=${API_KEY}`);
     const { id, name, background_image } = response.data;
@@ -31,6 +51,4 @@ const getVideoGamesByIdDatabase = async (id) => {
     throw new Error("No se pudo obtener el videojuego");
   }
   return videogame;
-};
-
-module.exports = getVideoGamesById;
+}; */

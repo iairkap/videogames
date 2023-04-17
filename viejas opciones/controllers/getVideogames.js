@@ -1,6 +1,6 @@
 const axios = require("axios");
-const Videogame = require("../models/Videogame");
-const Genre = require("../models/Genre");
+const Videogame = require("../api/src/models/Videogame");
+const Genre = require("../api/src/models/Genre");
 const { API_KEY, URL } = process.env;
 
 /*   GET | /videogames
@@ -27,7 +27,7 @@ const getVideogames = async (req, res) => {
   });
   const fetchGamesFromApi = async (page) => {
     const response = await axios.get(
-      `${URL}/games?key=${API_KEY}&page=${page}&page_size=40`
+      `${URL}/games?key=${API_KEY}&page=${page}&page_size=20`
     );
     return response.data.results.map((videogame) => {
       return {
@@ -42,7 +42,7 @@ const getVideogames = async (req, res) => {
   };
 
   const apiVideogamesArray = [];
-  const totalPages = 3;
+  const totalPages = 5;
 
   for (let page = 1; page <= totalPages; page++) {
     const videogames = await fetchGamesFromApi(page);
