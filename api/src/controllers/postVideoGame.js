@@ -1,9 +1,12 @@
 const { Videogame, Genre, Op } = require("../db.js");
 
 const postVideoGame = async (req, res, next) => {
+  //aca estoy recibiendo los datos del front, los guardo en la bdd y los devuelvo al front
+  console.log("Recibiendo datos del front:", req.body);
+
   const newGame = req.body;
-  const createGameBDD = Videogame.create({
-    name: newGame.name,
+  const createGameBDD = await Videogame.create({
+    name: newGame.name.split(" ").join("-"),
     description: newGame.description,
     platforms: newGame.platforms,
     imagen: newGame.imagen,
@@ -11,42 +14,8 @@ const postVideoGame = async (req, res, next) => {
     rating: newGame.rating,
   });
   createGameBDD.addGenre(newGame.genres);
-  return newGame;
+  res.send(newGame);
 };
-
 module.exports = {
   postVideoGame,
 };
-
-/* try {
-    const videogame = await axios.get(
-        `$https://api.rawg.io/api/games?key=${YOUR_API_KEY}&search=${name.toLowerCase()}}`
-        );
-        const { id, name, genres } = videogame.data;
-        return {
-            id,
-            name,
-            Genres: genres.map((genres) => genres.type.name),
-        };
-    } catch {
-        const videogame = await Videogame.findOne({
-            where: { name: name.toLowerCase() },
-            include: {
-                model: Genre,
-                attributes: ["name"],
-                through: {
-                    attributes: [],
-                },
-            },
-        }); */
-/* if (!videogame) {
-            throw Error("No se encontro el juego");
-        }
-        const { id, Genres } = videogame;
-        const nameBD = videogame.name;
-        return {
-            id,
-            name: nameBD,
-            Genres: Genres.map((genre) => genre.name),
-        };
-        } */

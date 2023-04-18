@@ -5,7 +5,6 @@ const { YOUR_API_KEY } = process.env;
 let cache = [];
 
 const getVideoGames = async (req, res, next) => {
-  const { name } = req.query;
   try {
     if (cache.length) {
       const dbVideogames = await Videogame.findAll({
@@ -18,7 +17,7 @@ const getVideoGames = async (req, res, next) => {
         ],
       });
 
-      const response = [...cache.slice(0, 99), ...dbVideogames]; //aca estoy mezclando los datos de la api con los de la bdd
+      const response = [...dbVideogames, ...cache.slice(0, 99)]; //aca estoy mezclando los datos de la api con los de la bdd
 
       return res.send(response);
     } else {
@@ -51,7 +50,7 @@ const getVideoGames = async (req, res, next) => {
           platforms: v.platforms.map((p) => p.platform.name),
         };
       });
-      return res.send([...cache, ...dbVideogames]); //aca estoy mezclando los datos de la api con los de la bdd
+      return res.send([...dbVideogames, ...cache]); //aca estoy mezclando los datos de la api con los de la bdd
     }
   } catch (error) {
     console.error(error);
