@@ -1,0 +1,16 @@
+/* quiero que la mainConatiner me quede centrada tenga un color gris de fondo con una sombra y un efecto neon */
+
+.mainConatiner {
+  background-color: #f5f5f5;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 0 auto;
+  width: 80%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+  animation: neon 1.5s ease-in-out infinite alternate;
+}
